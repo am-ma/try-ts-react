@@ -59,28 +59,15 @@ class Dot extends React.Component<DotProps, DotState> {
 }
 
 interface CanvasProps {
-  color: string;
-}
-interface CanvasState {
+  onClick: Function;
   dots: DotValues[];
 }
+interface CanvasState {}
 class Canvas extends React.Component<CanvasProps, CanvasState> {
   constructor(props: CanvasProps) {
     super(props);
     this.state = {
-      dots: Array(canvasHeight * canvasWidth).fill(null).map(values => ({
-        isFill: false,
-        color: this.props.color,
-      } as DotValues)),
     };
-  }
-
-  handleClick(i: number) {
-    const dots = this.state.dots.slice();
-    const dot = dots[i];
-    dots[i].isFill = !dots[i].isFill;
-    dots[i].color = this.props.color;
-    this.setState({ dots: dots });
   }
 
   render() {
@@ -92,8 +79,8 @@ class Canvas extends React.Component<CanvasProps, CanvasState> {
             .fill(null)
             .map((_, w) => {
               const index = w + h * canvasWidth;
-              const values = this.state.dots[index];
-              return <Dot values={values} key={index} onClick={() => this.handleClick(index)} />;
+              const values = this.props.dots[index];
+              return <Dot values={values} key={index} onClick={() => this.props.onClick(index)} />;
             })}
         </div>
       ));
@@ -105,12 +92,23 @@ class Canvas extends React.Component<CanvasProps, CanvasState> {
 interface AppProps {}
 interface AppState {
   color: string;
+  dots: DotValues[];
+  isSaved: boolean;
 }
 class App extends React.Component<AppProps, AppState> {
   constructor(props: AppProps) {
     super(props);
+    const defaultColor = '#000';
+    // 読み出し
+    const loaded = this.load();
+
     this.state = {
-      color: '#000',
+      color: defaultColor,
+      dots: loaded ? loaded : Array(canvasHeight * canvasWidth).fill(null).map(values => ({
+        isFill: false,
+        color: defaultColor,
+      } as DotValues)),
+      isSaved: loaded !== [],
     };
   }
 
@@ -120,15 +118,47 @@ class App extends React.Component<AppProps, AppState> {
     });
   }
 
+  handleClick(i: number) {
+    const dots = this.state.dots.slice();
+    dots[i].isFill = !dots[i].isFill;
+    dots[i].color = this.state.color;
+    this.setState({ dots: dots });
+  }
+
+  saveOnClick() {
+    const dotsJson = JSON.stringify(this.state.dots);
+    window.localStorage.setItem('ts-react-drawing', dotsJson);
+    window.alert('saved!');
+    this.setState({isSaved: true});
+  }
+
+  load() {
+    const dotsJson = window.localStorage.getItem('ts-react-drawing');
+    if (!dotsJson) {
+      return [];
+    } 
+
+    return JSON.parse(dotsJson);
+  }
+
+  loadOnClick() {
+    const loaded = this.load();
+    this.setState({ dots: loaded });
+  }
+
   render() {
     return (
       <div className="board">
         <div className="board-board">
-          <Canvas color={this.state.color} />
+          <Canvas dots={this.state.dots} onClick={(i: number) => this.handleClick(i)} />
         </div>
         <div className="board-info">
           <div>
-            {<ColorInput handleUpdate={(color: string) => this.colorHandleUpdate(color)} />}
+            <ColorInput handleUpdate={(color: string) => this.colorHandleUpdate(color)} />
+          </div>
+          <div>
+            <button type="button" onClick={() => this.saveOnClick()}>save</button>
+            {this.state.isSaved && <button type="button" onClick={() => this.loadOnClick()}>load</button>}
           </div>
           <ol>{/* TODO */}</ol>
         </div>
