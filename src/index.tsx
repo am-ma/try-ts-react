@@ -15,7 +15,7 @@ class ColorInput extends React.Component<ColorInputProps, ColorInputState> {
   constructor(props: ColorInputProps) {
     super(props);
     this.state = {
-      color: '#ccc',
+      color: '#000',
     };
   }
 
@@ -66,8 +66,6 @@ interface CanvasState {}
 class Canvas extends React.Component<CanvasProps, CanvasState> {
   constructor(props: CanvasProps) {
     super(props);
-    this.state = {
-    };
   }
 
   render() {
@@ -160,7 +158,6 @@ class App extends React.Component<AppProps, AppState> {
             <button type="button" onClick={() => this.saveOnClick()}>save</button>
             {this.state.isSaved && <button type="button" onClick={() => this.loadOnClick()}>load</button>}
           </div>
-          <ol>{/* TODO */}</ol>
         </div>
       </div>
     );
