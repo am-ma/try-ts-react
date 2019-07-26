@@ -3,10 +3,6 @@ body {
   margin: 20px;
 }
 
-ol, ul {
-  padding-left: 30px;
-}
-
 .canvas-row:after {
   clear: both;
   content: "";
@@ -55,4 +51,15 @@ ol, ul {
 
 svg {
   border: 1px solid #ccc;
+}
+
+ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.dot-size {
+  width: 3rem;
+  margin: 8px 4px;
+  text-align: right;
 }

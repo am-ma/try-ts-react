@@ -95,10 +95,11 @@ class Canvas extends React.Component<CanvasProps, CanvasState> {
 
 interface PreviewProps {
   dots: DotValues[];
+  dotSize: number;
 }
 class Preview extends React.Component<PreviewProps> {
   render() {
-    const dotSize = 8
+    const dotSize = this.props.dotSize;
     const width = dotSize * canvasWidth;
     const height = dotSize * canvasHeight;
 
@@ -121,6 +122,7 @@ interface AppState {
   color: string;
   dots: DotValues[];
   isSaved: boolean;
+  dotSize: number;
 }
 class App extends React.Component<AppProps, AppState> {
   constructor(props: AppProps) {
@@ -136,6 +138,7 @@ class App extends React.Component<AppProps, AppState> {
         color: defaultColor,
       } as DotValues)),
       isSaved: loaded !== [],
+      dotSize: 8,
     };
   }
 
@@ -173,6 +176,10 @@ class App extends React.Component<AppProps, AppState> {
     this.setState({ dots: loaded });
   }
 
+  dotSizeOnChange(e: React.ChangeEvent<HTMLInputElement>) {
+    this.setState({ dotSize: parseInt(e.target.value) });
+  }
+
   render() {
     return (
       <div className="board">
@@ -188,7 +195,13 @@ class App extends React.Component<AppProps, AppState> {
             {this.state.isSaved && <button type="button" onClick={() => this.loadOnClick()}>load</button>}
           </div>
           <div className="downloads">
-            <Preview dots={this.state.dots} />
+            <Preview dotSize={this.state.dotSize} dots={this.state.dots} />
+            <div>
+              dot size <input className="dot-size" type="number" value={this.state.dotSize} onChange={(e) => this.dotSizeOnChange(e)}></input> px
+            </div>
+            <div>
+              <button type="button">download</button>
+            </div>
           </div>
         </div>
       </div>
