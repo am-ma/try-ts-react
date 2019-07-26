@@ -68,6 +68,11 @@ class Canvas extends React.Component<CanvasProps, CanvasState> {
     super(props);
   }
 
+  renderDot(index: number) {
+    const values = this.props.dots[index];
+    return <Dot values={values} key={index} onClick={() => this.props.onClick(index)} />;
+  }
+
   render() {
     const dots = Array(canvasHeight)
       .fill(null)
@@ -77,8 +82,7 @@ class Canvas extends React.Component<CanvasProps, CanvasState> {
             .fill(null)
             .map((_, w) => {
               const index = w + h * canvasWidth;
-              const values = this.props.dots[index];
-              return <Dot values={values} key={index} onClick={() => this.props.onClick(index)} />;
+              return this.renderDot(index);
             })}
         </div>
       ));
