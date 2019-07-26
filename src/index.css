@@ -48,3 +48,11 @@ ol, ul {
 .board-info {
   margin-left: 20px;
 }
+
+.downloads {
+  margin-top: 16px;
+}
+
+svg {
+  border: 1px solid #ccc;
+}

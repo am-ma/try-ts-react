@@ -33,6 +33,7 @@ interface DotValues {
   isFill: boolean;
   color: string;
 }
+
 interface DotProps {
   values: DotValues;
   onClick: Function;
@@ -90,6 +91,30 @@ class Canvas extends React.Component<CanvasProps, CanvasState> {
     return <div>{dots}</div>;
   }
 }
+
+
+interface PreviewProps {
+  dots: DotValues[];
+}
+class Preview extends React.Component<PreviewProps> {
+  render() {
+    const dotSize = 8
+    const width = dotSize * canvasWidth;
+    const height = dotSize * canvasHeight;
+
+    const imageDots = this.props.dots.map((dot, i) => {
+      const style: CSSProperties = {
+        fill: dot.isFill ? dot.color : '#fff',
+      };
+      const xIndex = i % canvasWidth;
+      const yIndex = Math.floor(i / canvasWidth);
+      return <rect x={xIndex*dotSize} y={yIndex*dotSize} width={dotSize} height={dotSize} style={style}></rect>
+    });
+
+    return <svg width={width} height={height}>{ imageDots }</svg>;
+  }
+}
+
 
 interface AppProps {}
 interface AppState {
@@ -161,6 +186,9 @@ class App extends React.Component<AppProps, AppState> {
           <div>
             <button type="button" onClick={() => this.saveOnClick()}>save</button>
             {this.state.isSaved && <button type="button" onClick={() => this.loadOnClick()}>load</button>}
+          </div>
+          <div className="downloads">
+            <Preview dots={this.state.dots} />
           </div>
         </div>
       </div>
