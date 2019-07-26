@@ -1,0 +1,50 @@
+body {
+  font: 14px "Century Gothic", Futura, sans-serif;
+  margin: 20px;
+}
+
+ol, ul {
+  padding-left: 30px;
+}
+
+.canvas-row:after {
+  clear: both;
+  content: "";
+  display: table;
+}
+
+.status {
+  margin-bottom: 10px;
+}
+
+.dot {
+  background: #fff;
+  border: 1px solid #999;
+  float: left;
+  font-size: 24px;
+  font-weight: bold;
+  line-height: 24px;
+  height: 24px;
+  margin-right: -1px;
+  margin-top: -1px;
+  padding: 0;
+  text-align: center;
+  width: 24px;
+}
+
+.dot:focus {
+  outline: none;
+}
+
+.kbd-navigation .dot:focus {
+  background: #ddd;
+}
+
+.board {
+  display: flex;
+  flex-direction: row;
+}
+
+.board-info {
+  margin-left: 20px;
+}
