@@ -5,6 +5,30 @@ import './index.css';
 const canvasHeight: number = 12;
 const canvasWidth: number = 12;
 
+interface ColorInputProps {
+  handleUpdate: Function;
+}
+interface ColorInputState {
+  color: string;
+}
+class ColorInput extends React.Component<ColorInputProps, ColorInputState> {
+  constructor(props: ColorInputProps) {
+    super(props);
+    this.state = {
+      color: '#ccc',
+    };
+  }
+
+  onChange(e: React.ChangeEvent<HTMLInputElement>) {
+    this.setState({ color: e.target.value });
+    this.props.handleUpdate(e.target.value);
+  }
+
+  render() {
+    return <input type="color" value={this.state.color} onChange={(e) => this.onChange(e)} />
+  }
+}
+
 interface DotValues {
   isFill: boolean;
   color: string;
@@ -34,7 +58,9 @@ class Dot extends React.Component<DotProps, DotState> {
   }
 }
 
-interface CanvasProps {}
+interface CanvasProps {
+  color: string;
+}
 interface CanvasState {
   dots: DotValues[];
 }
@@ -44,7 +70,7 @@ class Canvas extends React.Component<CanvasProps, CanvasState> {
     this.state = {
       dots: Array(canvasHeight * canvasWidth).fill(null).map(values => ({
         isFill: false,
-        color: '#000',
+        color: this.props.color,
       } as DotValues)),
     };
   }
@@ -53,7 +79,7 @@ class Canvas extends React.Component<CanvasProps, CanvasState> {
     const dots = this.state.dots.slice();
     const dot = dots[i];
     dots[i].isFill = !dots[i].isFill;
-    dots[i].color = '#000';
+    dots[i].color = this.props.color;
     this.setState({ dots: dots });
   }
 
@@ -76,18 +102,39 @@ class Canvas extends React.Component<CanvasProps, CanvasState> {
   }
 }
 
-const App: FunctionComponent = () => {
-  return (
-    <div className="board">
-      <div className="board-board">
-        <Canvas />
+interface AppProps {}
+interface AppState {
+  color: string;
+}
+class App extends React.Component<AppProps, AppState> {
+  constructor(props: AppProps) {
+    super(props);
+    this.state = {
+      color: '#000',
+    };
+  }
+
+  colorHandleUpdate(color: string) {
+    this.setState({
+      color
+    });
+  }
+
+  render() {
+    return (
+      <div className="board">
+        <div className="board-board">
+          <Canvas color={this.state.color} />
+        </div>
+        <div className="board-info">
+          <div>
+            {<ColorInput handleUpdate={(color: string) => this.colorHandleUpdate(color)} />}
+          </div>
+          <ol>{/* TODO */}</ol>
+        </div>
       </div>
-      <div className="board-info">
-        <div>{/* status */}</div>
-        <ol>{/* TODO */}</ol>
-      </div>
-    </div>
-  );
+    );
+  }
 };
 
 ReactDOM.render(<App />, document.getElementById('root'));
