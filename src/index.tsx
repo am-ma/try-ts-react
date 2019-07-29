@@ -115,14 +115,14 @@ class Preview extends React.Component<PreviewProps, PreviewState> {
   }
 
   componentDidMount() {
-    this.renderForDowload();
+    this.renderForDownload();
   }
 
   componentDidUpdate() {
-    this.renderForDowload();
+    this.renderForDownload();
   }
 
-  renderForDowload() {
+  renderForDownload() {
     // svg to xml data src
     const svg = this.svg.current!;
     const svgData = new XMLSerializer().serializeToString(svg as Node);
