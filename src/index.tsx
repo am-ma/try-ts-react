@@ -30,12 +30,12 @@ class Dot extends React.Component<DotProps, DotState> {
   }
 }
 
-interface CanvasProps {
+interface DotCanvasProps {
   onClick: Function;
   dots: DotValues[];
 }
-interface CanvasState {}
-class Canvas extends React.Component<CanvasProps, CanvasState> {
+interface DotCanvasState {}
+class DotCanvas extends React.Component<DotCanvasProps, DotCanvasState> {
   renderDot(index: number) {
     const values = this.props.dots[index];
     return <Dot values={values} key={index} onClick={() => this.props.onClick(index)} />;
@@ -222,7 +222,7 @@ class App extends React.Component<AppProps, AppState> {
     return (
       <div className="board">
         <div className="board-board">
-          <Canvas dots={this.state.dots} onClick={(i: number) => this.handleClick(i)} />
+          <DotCanvas dots={this.state.dots} onClick={(i: number) => this.handleClick(i)} />
         </div>
         <div className="board-info">
           <div>
