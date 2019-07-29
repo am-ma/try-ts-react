@@ -30,7 +30,7 @@ module.exports = {
         configFile: path.join(__dirname, 'tsconfig.json'),
       }),
     ],
-    extensions: ['.ts', '.js'],
+    extensions: ['.ts', '.js', '.tsx'],
   },
   plugins: [
     new HtmlWebpackPlugin({
