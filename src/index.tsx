@@ -1,34 +1,9 @@
 import React, { FunctionComponent, CSSProperties } from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import { timingSafeEqual } from 'crypto';
 
 const canvasHeight: number = 12;
 const canvasWidth: number = 12;
-
-interface ColorInputProps {
-  handleUpdate: Function;
-}
-interface ColorInputState {
-  color: string;
-}
-class ColorInput extends React.Component<ColorInputProps, ColorInputState> {
-  constructor(props: ColorInputProps) {
-    super(props);
-    this.state = {
-      color: '#000',
-    };
-  }
-
-  onChange(e: React.ChangeEvent<HTMLInputElement>) {
-    this.setState({ color: e.target.value });
-    this.props.handleUpdate(e.target.value);
-  }
-
-  render() {
-    return <input type="color" value={this.state.color} onChange={(e) => this.onChange(e)} />
-  }
-}
 
 interface DotValues {
   isFill: boolean;
@@ -184,12 +159,6 @@ class App extends React.Component<AppProps, AppState> {
     };
   }
 
-  colorHandleUpdate(color: string) {
-    this.setState({
-      color
-    });
-  }
-
   handleClick(i: number) {
     const dots = this.state.dots.slice();
     dots[i].isFill = !dots[i].isFill;
@@ -197,11 +166,21 @@ class App extends React.Component<AppProps, AppState> {
     this.setState({ dots: dots });
   }
 
+  colorOnChange(e: React.ChangeEvent<HTMLInputElement>) {
+    this.setState({
+      color: e.target.value,
+    });
+  }
+
   saveOnClick() {
     const dotsJson = JSON.stringify(this.state.dots);
     window.localStorage.setItem('ts-react-drawing', dotsJson);
     window.alert('saved!');
     this.setState({isSaved: true});
+  }
+
+  dotSizeOnChange(e: React.ChangeEvent<HTMLInputElement>) {
+    this.setState({ dotSize: parseInt(e.target.value) });
   }
 
   load() {
@@ -218,10 +197,6 @@ class App extends React.Component<AppProps, AppState> {
     this.setState({ dots: loaded });
   }
 
-  dotSizeOnChange(e: React.ChangeEvent<HTMLInputElement>) {
-    this.setState({ dotSize: parseInt(e.target.value) });
-  }
-
   render() {
     return (
       <div className="board">
@@ -230,7 +205,7 @@ class App extends React.Component<AppProps, AppState> {
         </div>
         <div className="board-info">
           <div>
-            <ColorInput handleUpdate={(color: string) => this.colorHandleUpdate(color)} />
+          <input type="color" value={this.state.color} onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.colorOnChange(e)} />
           </div>
           <div>
             <button type="button" onClick={() => this.saveOnClick()}>save</button>
