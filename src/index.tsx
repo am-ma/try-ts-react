@@ -1,6 +1,7 @@
 import React, { FunctionComponent, CSSProperties } from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+import { taggedTemplateExpression } from '@babel/types';
 
 const canvasHeight: number = 12;
 const canvasWidth: number = 12;
@@ -73,10 +74,19 @@ interface PreviewProps {
   dots: DotValues[];
   dotSize: number;
 }
-class Preview extends React.Component<PreviewProps> {
+
+interface PreviewState {
+  dlUrl: string;
+}
+class Preview extends React.Component<PreviewProps, PreviewState> {
   private svg = React.createRef<SVGSVGElement>();
   private canvas = React.createRef<HTMLCanvasElement>();
-  private dlLink = React.createRef<HTMLAnchorElement>();
+  constructor(props: PreviewProps) {
+    super(props);
+    this.state = {
+      dlUrl: '#',
+    };
+  }
   render() {
     // render svg
     const dotSize = this.props.dotSize;
@@ -98,7 +108,7 @@ class Preview extends React.Component<PreviewProps> {
         <canvas id="canvas" ref={this.canvas} width={width} height={height} className="not-display">
         </canvas>            
         <div>
-          <a href="#" id="download" ref={this.dlLink} download="dots.png">download</a>
+          <a href={this.state.dlUrl} id="download" download="dots.png">download</a>
         </div>
       </>
     );
@@ -113,21 +123,21 @@ class Preview extends React.Component<PreviewProps> {
   }
 
   renderForDowload() {
-    // csv to xml data src
+    // svg to xml data src
     const svg = this.svg.current!;
     const svgData = new XMLSerializer().serializeToString(svg as Node);
     const imgsrc = 'data:image/svg+xml;charset=utf-8;base64,' + btoa(unescape(encodeURIComponent(svgData)));
     
     const canvas = this.canvas.current!;
     const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
-    const dlLink = this.dlLink.current!;
     const image = new Image();
     image.onload = () => {
       // render canvas
       ctx.drawImage(image, 0, 0);
       // render download button
-      dlLink.href = canvas.toDataURL('image/png');
-      dlLink.removeAttribute('disabled');
+      this.setState({
+        dlUrl: canvas.toDataURL('image/png'),
+      });
     };
     image.src = imgsrc;
   }
