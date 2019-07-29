@@ -1,8 +1,6 @@
-import React, { FunctionComponent, CSSProperties } from 'react';
+import React, { CSSProperties } from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import { taggedTemplateExpression } from '@babel/types';
-
 const canvasHeight: number = 12;
 const canvasWidth: number = 12;
 
@@ -15,12 +13,8 @@ interface DotProps {
   values: DotValues;
   onClick: Function;
 }
-interface DotState { }
+interface DotState {}
 class Dot extends React.Component<DotProps, DotState> {
-  constructor(props: DotProps) {
-    super(props);
-  }
-
   renderStyle() {
     if (!this.props.values.isFill) {
       return {} as CSSProperties;
@@ -42,10 +36,6 @@ interface CanvasProps {
 }
 interface CanvasState {}
 class Canvas extends React.Component<CanvasProps, CanvasState> {
-  constructor(props: CanvasProps) {
-    super(props);
-  }
-
   renderDot(index: number) {
     const values = this.props.dots[index];
     return <Dot values={values} key={index} onClick={() => this.props.onClick(index)} />;
@@ -68,7 +58,6 @@ class Canvas extends React.Component<CanvasProps, CanvasState> {
     return <div>{dots}</div>;
   }
 }
-
 
 interface PreviewProps {
   dots: DotValues[];
@@ -93,22 +82,38 @@ class Preview extends React.Component<PreviewProps, PreviewState> {
     const width = dotSize * canvasWidth;
     const height = dotSize * canvasHeight;
 
-    const imageDots = this.props.dots.map((dot, i) => {
-      const style: CSSProperties = {
-        fill: dot.isFill ? dot.color : '#fff',
-      };
-      const xIndex = i % canvasWidth;
-      const yIndex = Math.floor(i / canvasWidth);
-      return <rect key={`${xIndex}_${yIndex}`} x={xIndex*dotSize} y={yIndex*dotSize} width={dotSize} height={dotSize} style={style}></rect>
-    });
+    const imageDots = this.props.dots
+      .map((dot, i) => {
+        if (!dot.isFill) {
+          return null;
+        }
+        const style: CSSProperties = {
+          fill: dot.color,
+        };
+        const xIndex = i % canvasWidth;
+        const yIndex = Math.floor(i / canvasWidth);
+        return (
+          <rect
+            key={`${xIndex}_${yIndex}`}
+            x={xIndex * dotSize}
+            y={yIndex * dotSize}
+            width={dotSize}
+            height={dotSize}
+            style={style}></rect>
+        );
+      })
+      .filter(dotJSX => dotJSX !== null);
 
     return (
       <>
-        <svg id="svg" width={width} height={height} ref={this.svg}>{ imageDots }</svg>
-        <canvas id="canvas" ref={this.canvas} width={width} height={height} className="not-display">
-        </canvas>            
+        <svg id="svg" width={width} height={height} ref={this.svg}>
+          {imageDots}
+        </svg>
+        <canvas id="canvas" ref={this.canvas} width={width} height={height} className="not-display"></canvas>
         <div>
-          <a href={this.state.dlUrl} id="download" download="dots.png">download</a>
+          <a href={this.state.dlUrl} id="download" download="dots.png">
+            download
+          </a>
         </div>
       </>
     );
@@ -127,7 +132,7 @@ class Preview extends React.Component<PreviewProps, PreviewState> {
     const svg = this.svg.current!;
     const svgData = new XMLSerializer().serializeToString(svg as Node);
     const imgsrc = 'data:image/svg+xml;charset=utf-8;base64,' + btoa(unescape(encodeURIComponent(svgData)));
-    
+
     const canvas = this.canvas.current!;
     const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
     const image = new Image();
@@ -142,7 +147,6 @@ class Preview extends React.Component<PreviewProps, PreviewState> {
     image.src = imgsrc;
   }
 }
-
 
 interface AppProps {}
 interface AppState {
@@ -160,10 +164,17 @@ class App extends React.Component<AppProps, AppState> {
 
     this.state = {
       color: defaultColor,
-      dots: loaded ? loaded : Array(canvasHeight * canvasWidth).fill(null).map(values => ({
-        isFill: false,
-        color: defaultColor,
-      } as DotValues)),
+      dots: loaded
+        ? loaded
+        : Array(canvasHeight * canvasWidth)
+            .fill(null)
+            .map(
+              () =>
+                ({
+                  isFill: false,
+                  color: defaultColor,
+                } as DotValues)
+            ),
       isSaved: loaded !== [],
       dotSize: 8,
     };
@@ -186,7 +197,7 @@ class App extends React.Component<AppProps, AppState> {
     const dotsJson = JSON.stringify(this.state.dots);
     window.localStorage.setItem('ts-react-drawing', dotsJson);
     window.alert('saved!');
-    this.setState({isSaved: true});
+    this.setState({ isSaved: true });
   }
 
   dotSizeOnChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -197,7 +208,7 @@ class App extends React.Component<AppProps, AppState> {
     const dotsJson = window.localStorage.getItem('ts-react-drawing');
     if (!dotsJson) {
       return [];
-    } 
+    }
 
     return JSON.parse(dotsJson);
   }
@@ -215,15 +226,31 @@ class App extends React.Component<AppProps, AppState> {
         </div>
         <div className="board-info">
           <div>
-          <input type="color" value={this.state.color} onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.colorOnChange(e)} />
+            <input
+              type="color"
+              value={this.state.color}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.colorOnChange(e)}
+            />
           </div>
           <div>
-            <button type="button" onClick={() => this.saveOnClick()}>save</button>
-            {this.state.isSaved && <button type="button" onClick={() => this.loadOnClick()}>load</button>}
+            <button type="button" onClick={() => this.saveOnClick()}>
+              save
+            </button>
+            {this.state.isSaved && (
+              <button type="button" onClick={() => this.loadOnClick()}>
+                load
+              </button>
+            )}
           </div>
           <div className="downloads">
             <div>
-              dot size <input className="dot-size" type="number" value={this.state.dotSize} onChange={(e) => this.dotSizeOnChange(e)}></input> px
+              dot size{' '}
+              <input
+                className="dot-size"
+                type="number"
+                value={this.state.dotSize}
+                onChange={e => this.dotSizeOnChange(e)}></input>{' '}
+              px
             </div>
             <Preview dotSize={this.state.dotSize} dots={this.state.dots} />
           </div>
@@ -231,6 +258,6 @@ class App extends React.Component<AppProps, AppState> {
       </div>
     );
   }
-};
+}
 
 ReactDOM.render(<App />, document.getElementById('root'));
