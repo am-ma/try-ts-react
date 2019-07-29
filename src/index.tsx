@@ -1,6 +1,7 @@
 import React, { FunctionComponent, CSSProperties } from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+import { timingSafeEqual } from 'crypto';
 
 const canvasHeight: number = 12;
 const canvasWidth: number = 12;
@@ -98,7 +99,11 @@ interface PreviewProps {
   dotSize: number;
 }
 class Preview extends React.Component<PreviewProps> {
+  private svg = React.createRef<SVGSVGElement>();
+  private canvas = React.createRef<HTMLCanvasElement>();
+  private dlLink = React.createRef<HTMLAnchorElement>();
   render() {
+    // render svg
     const dotSize = this.props.dotSize;
     const width = dotSize * canvasWidth;
     const height = dotSize * canvasHeight;
@@ -109,10 +114,47 @@ class Preview extends React.Component<PreviewProps> {
       };
       const xIndex = i % canvasWidth;
       const yIndex = Math.floor(i / canvasWidth);
-      return <rect x={xIndex*dotSize} y={yIndex*dotSize} width={dotSize} height={dotSize} style={style}></rect>
+      return <rect key={`${xIndex}_${yIndex}`} x={xIndex*dotSize} y={yIndex*dotSize} width={dotSize} height={dotSize} style={style}></rect>
     });
 
-    return <svg width={width} height={height}>{ imageDots }</svg>;
+    return (
+      <>
+        <svg id="svg" width={width} height={height} ref={this.svg}>{ imageDots }</svg>
+        <canvas id="canvas" ref={this.canvas} width={width} height={height} className="not-display">
+        </canvas>            
+        <div>
+          <a href="#" id="download" ref={this.dlLink} download="dots.png">download</a>
+        </div>
+      </>
+    );
+  }
+
+  componentDidMount() {
+    this.renderForDowload();
+  }
+
+  componentDidUpdate() {
+    this.renderForDowload();
+  }
+
+  renderForDowload() {
+    // csv to xml data src
+    const svg = this.svg.current!;
+    const svgData = new XMLSerializer().serializeToString(svg as Node);
+    const imgsrc = 'data:image/svg+xml;charset=utf-8;base64,' + btoa(unescape(encodeURIComponent(svgData)));
+    
+    const canvas = this.canvas.current!;
+    const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
+    const dlLink = this.dlLink.current!;
+    const image = new Image();
+    image.onload = () => {
+      // render canvas
+      ctx.drawImage(image, 0, 0);
+      // render download button
+      dlLink.href = canvas.toDataURL('image/png');
+      dlLink.removeAttribute('disabled');
+    };
+    image.src = imgsrc;
   }
 }
 
@@ -195,13 +237,10 @@ class App extends React.Component<AppProps, AppState> {
             {this.state.isSaved && <button type="button" onClick={() => this.loadOnClick()}>load</button>}
           </div>
           <div className="downloads">
-            <Preview dotSize={this.state.dotSize} dots={this.state.dots} />
             <div>
               dot size <input className="dot-size" type="number" value={this.state.dotSize} onChange={(e) => this.dotSizeOnChange(e)}></input> px
             </div>
-            <div>
-              <button type="button">download</button>
-            </div>
+            <Preview dotSize={this.state.dotSize} dots={this.state.dots} />
           </div>
         </div>
       </div>
