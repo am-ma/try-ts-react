@@ -1,0 +1,42 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DotCanvas render will render 1`] = `
+<div>
+  <div
+    className="canvas-row"
+  >
+    <button
+      className="dot"
+      onClick={[Function]}
+      style={
+        Object {
+          "backgroundColor": "#000",
+        }
+      }
+    />
+    <button
+      className="dot"
+      onClick={[Function]}
+      style={
+        Object {
+          "backgroundColor": "#000",
+        }
+      }
+    />
+  </div>
+  <div
+    className="canvas-row"
+  >
+    <button
+      className="dot"
+      onClick={[Function]}
+      style={Object {}}
+    />
+    <button
+      className="dot"
+      onClick={[Function]}
+      style={Object {}}
+    />
+  </div>
+</div>
+`;

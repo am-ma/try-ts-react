@@ -1,13 +1,13 @@
 import React from 'react';
 
 import DotValues from '~/models/DotValues.model';
-import DotCanvas from './DotCanvas';
-import DotPreview from './DotPreview';
+import DotCanvas from './components/DotCanvas';
+import DotPreview from './components/DotPreview';
 
-const canvasHeight: number = 12;
-const canvasWidth: number = 12;
-
-interface AppProps {}
+interface AppProps {
+  canvasHeight: number;
+  canvasWidth: number;
+}
 interface AppState {
   color: string;
   dots: DotValues[];
@@ -18,15 +18,17 @@ interface AppState {
 export default class App extends React.Component<AppProps, AppState> {
   constructor(props: AppProps) {
     super(props);
+
     const defaultColor = '#000';
     // 読み出し
     const loaded = this.load();
+    const isLoaded = loaded.length > 0;
 
     this.state = {
       color: defaultColor,
-      dots: loaded
+      dots: isLoaded
         ? loaded
-        : Array(canvasHeight * canvasWidth)
+        : Array(this.props.canvasHeight * this.props.canvasWidth)
             .fill(null)
             .map(
               () =>
@@ -35,7 +37,7 @@ export default class App extends React.Component<AppProps, AppState> {
                   color: defaultColor,
                 } as DotValues)
             ),
-      isSaved: loaded !== [],
+      isSaved: isLoaded,
       dotSize: 8,
     };
   }
@@ -83,8 +85,8 @@ export default class App extends React.Component<AppProps, AppState> {
       <div className="board">
         <div className="board-board">
           <DotCanvas
-            height={canvasHeight}
-            width={canvasWidth}
+            height={this.props.canvasHeight}
+            width={this.props.canvasWidth}
             dots={this.state.dots}
             onClick={(i: number) => this.handleClick(i)}
           />
@@ -117,7 +119,12 @@ export default class App extends React.Component<AppProps, AppState> {
                 onChange={e => this.dotSizeOnChange(e)}></input>{' '}
               px
             </div>
-            <DotPreview height={canvasHeight} width={canvasWidth} dotSize={this.state.dotSize} dots={this.state.dots} />
+            <DotPreview
+              height={this.props.canvasHeight}
+              width={this.props.canvasWidth}
+              dotSize={this.state.dotSize}
+              dots={this.state.dots}
+            />
           </div>
         </div>
       </div>

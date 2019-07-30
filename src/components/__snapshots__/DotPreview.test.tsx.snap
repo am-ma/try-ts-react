@@ -1,0 +1,49 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DotPreview render will render 1`] = `
+Array [
+  <svg
+    height={16}
+    id="svg"
+    width={16}
+  >
+    <rect
+      height={8}
+      style={
+        Object {
+          "fill": "#000",
+        }
+      }
+      width={8}
+      x={0}
+      y={0}
+    />
+    <rect
+      height={8}
+      style={
+        Object {
+          "fill": "#000",
+        }
+      }
+      width={8}
+      x={8}
+      y={0}
+    />
+  </svg>,
+  <canvas
+    className="not-display"
+    height={16}
+    id="canvas"
+    width={16}
+  />,
+  <div>
+    <a
+      download="dots.png"
+      href="#"
+      id="download"
+    >
+      download
+    </a>
+  </div>,
+]
+`;

@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Dot render will render when isFill is FALSE 1`] = `
+<button
+  className="dot"
+  onClick={[Function]}
+  style={Object {}}
+/>
+`;
+
+exports[`Dot render will render when isFill is TRUE 1`] = `
+<button
+  className="dot"
+  onClick={[Function]}
+  style={
+    Object {
+      "backgroundColor": "#000",
+    }
+  }
+/>
+`;

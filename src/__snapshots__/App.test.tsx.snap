@@ -1,0 +1,97 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`App render will render 1`] = `
+<div
+  className="board"
+>
+  <div
+    className="board-board"
+  >
+    <div>
+      <div
+        className="canvas-row"
+      >
+        <button
+          className="dot"
+          onClick={[Function]}
+          style={Object {}}
+        />
+        <button
+          className="dot"
+          onClick={[Function]}
+          style={Object {}}
+        />
+      </div>
+      <div
+        className="canvas-row"
+      >
+        <button
+          className="dot"
+          onClick={[Function]}
+          style={Object {}}
+        />
+        <button
+          className="dot"
+          onClick={[Function]}
+          style={Object {}}
+        />
+      </div>
+    </div>
+  </div>
+  <div
+    className="board-info"
+  >
+    <div>
+      <input
+        onChange={[Function]}
+        type="color"
+        value="#000"
+      />
+    </div>
+    <div>
+      <button
+        onClick={[Function]}
+        type="button"
+      >
+        save
+      </button>
+    </div>
+    <div
+      className="downloads"
+    >
+      <div>
+        dot size
+         
+        <input
+          className="dot-size"
+          onChange={[Function]}
+          type="number"
+          value={8}
+        />
+         
+        px
+      </div>
+      <svg
+        height={16}
+        id="svg"
+        width={16}
+      />
+      <canvas
+        className="not-display"
+        height={16}
+        id="canvas"
+        width={16}
+      />
+      <div>
+        <a
+          download="dots.png"
+          href="#"
+          id="download"
+        >
+          download
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+`;
