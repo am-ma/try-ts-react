@@ -39,6 +39,26 @@ describe('App', () => {
     });
   });
 
+  describe('clearOnClick', () => {
+    it('will clear and set defalt dots', () => {
+      const wrapper = shallow(jsx);
+      const app = wrapper.instance() as App;
+
+      app.setState({
+        dots: [{ isFill: true, color: '#ccc' }],
+      });
+
+      app.clearOnClick();
+
+      expect(app.state.dots).toEqual([
+        { isFill: false, color: '#000' },
+        { isFill: false, color: '#000' },
+        { isFill: false, color: '#000' },
+        { isFill: false, color: '#000' },
+      ]);
+    });
+  });
+
   describe('saveOnClick', () => {
     it('will save dots', () => {
       const wrapper = shallow(jsx);

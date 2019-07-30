@@ -53,6 +53,14 @@ exports[`App render will render 1`] = `
         onClick={[Function]}
         type="button"
       >
+        clear
+      </button>
+    </div>
+    <div>
+      <button
+        onClick={[Function]}
+        type="button"
+      >
         save
       </button>
     </div>

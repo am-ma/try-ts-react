@@ -16,30 +16,32 @@ interface AppState {
 }
 
 export default class App extends React.Component<AppProps, AppState> {
+  private defaultColor = '#000';
   constructor(props: AppProps) {
     super(props);
 
-    const defaultColor = '#000';
     // 読み出し
     const loaded = this.load();
     const isLoaded = loaded.length > 0;
 
     this.state = {
-      color: defaultColor,
-      dots: isLoaded
-        ? loaded
-        : Array(this.props.canvasHeight * this.props.canvasWidth)
-            .fill(null)
-            .map(
-              () =>
-                ({
-                  isFill: false,
-                  color: defaultColor,
-                } as DotValues)
-            ),
+      color: this.defaultColor,
+      dots: isLoaded ? loaded : this.createDefaultDots(),
       isSaved: isLoaded,
       dotSize: 8,
     };
+  }
+
+  createDefaultDots() {
+    return Array(this.props.canvasHeight * this.props.canvasWidth)
+      .fill(null)
+      .map(
+        () =>
+          ({
+            isFill: false,
+            color: this.defaultColor,
+          } as DotValues)
+      );
   }
 
   handleClick(i: number) {
@@ -52,6 +54,13 @@ export default class App extends React.Component<AppProps, AppState> {
   colorOnChange(e: React.ChangeEvent<HTMLInputElement>) {
     this.setState({
       color: e.target.value,
+    });
+  }
+
+  clearOnClick() {
+    const dots = this.createDefaultDots();
+    this.setState({
+      dots,
     });
   }
 
@@ -98,6 +107,11 @@ export default class App extends React.Component<AppProps, AppState> {
               value={this.state.color}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.colorOnChange(e)}
             />
+          </div>
+          <div>
+            <button type="button" onClick={() => this.clearOnClick()}>
+              clear
+            </button>
           </div>
           <div>
             <button type="button" onClick={() => this.saveOnClick()}>
